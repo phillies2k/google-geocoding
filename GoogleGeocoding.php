@@ -10,11 +10,11 @@
 
 namespace P2\GoogleGeocoding;
 
+use P2\GoogleGeocoding\Exception\InvalidFormatException;
 use P2\GoogleGeocoding\Exception\InvalidResponseException;
 use P2\GoogleGeocoding\Geolocation\AddressComponent\AddressComponent;
 use P2\GoogleGeocoding\Geolocation\Geolocation;
 use P2\GoogleGeocoding\Geolocation\GeolocationInterface;
-use P2\GoogleGeocoding\Geolocation\Geometry\Bounds;
 use P2\GoogleGeocoding\Geolocation\Geometry\Geometry;
 use P2\GoogleGeocoding\Geolocation\Geometry\Location;
 use P2\GoogleGeocoding\Geolocation\Geometry\Viewport;
@@ -25,15 +25,33 @@ use P2\GoogleGeocoding\Geolocation\Geometry\Viewport;
  */
 class GoogleGeocoding implements GeocodingInterface
 {
-    const SERVICE_URL = 'https://maps.googleapis.com/maps/api/geocode/json';
+    /**
+     * @var string
+     */
+    const FORMAT_JSON = 'json';
 
     /**
-     * Returns an array of geolocations found for the given latitude and longitude.
-     *
-     * @param float $latitude
-     * @param float $longitude
-     *
-     * @return GeolocationInterface[]
+     * @var string
+     */
+    const FORMAT_XML = 'xml';
+
+    /**
+     * @var string
+     */
+    const SERVICE_URL = 'https://maps.googleapis.com/maps/api/geocode';
+
+    /**
+     * @var string
+     */
+    protected $format;
+
+    /**
+     * @var array
+     */
+    protected $cache;
+
+    /**
+     * {@inheritDoc}
      */
     public function findByCoordinates($latitude, $longitude)
     {
@@ -41,15 +59,35 @@ class GoogleGeocoding implements GeocodingInterface
     }
 
     /**
-     * Returns an array of geolocations found for the given address.
-     *
-     * @param string $address
-     *
-     * @return GeolocationInterface[]
+     * {@inheritDoc}
      */
     public function findByAddress($address)
     {
         return $this->request($this->generateUrl(array('address' => $address)));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setFormat($format)
+    {
+        if ($format !== static::FORMAT_JSON || $format !== static::FORMAT_XML) {
+            throw new InvalidFormatException(sprintf('Invalid google geocoding request format: "%s"', $format));
+        }
+
+        $this->format = $format;
+
+        return $this;
+    }
+
+    /**
+     * Returns the format of geocoding responses.
+     *
+     * @return string
+     */
+    protected function getFormat()
+    {
+        return $this->format;
     }
 
     /**
@@ -61,11 +99,7 @@ class GoogleGeocoding implements GeocodingInterface
      */
     protected function generateUrl(array $parameters = array())
     {
-        foreach ($parameters as $key => $value) {
-            $parameters[$key] = $key . '=' . urlencode($value);
-        }
-
-        return static::SERVICE_URL . '?' . implode('&', $parameters) . '&sensor=false';
+        return static::SERVICE_URL . '/' . $this->getFormat() . '?' . http_build_query($parameters);
     }
 
     /**
@@ -79,22 +113,32 @@ class GoogleGeocoding implements GeocodingInterface
      */
     protected function request($url)
     {
-        $ch = curl_init();
-
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HEADER, false);
-
-        if (false === $response = curl_exec($ch)) {
-            throw new InvalidResponseException();
-        }
-
-        $response = json_decode($response);
-
         $geolocations = array();
 
-        foreach ($response->results as $result) {
-            $geolocations[] = $this->createFromResponse($result);
+        try {
+            $ch = curl_init();
+
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HEADER, false);
+
+            if (false === $response = curl_exec($ch)) {
+                throw new InvalidResponseException();
+            }
+
+            switch ($this->getFormat()) {
+                case static::FORMAT_JSON:
+                    $response = json_encode($response);
+                    break;
+                case static::FORMAT_XML:
+                    $response =  simplexml_load_string($response);
+                    break;
+            }
+
+            foreach ($response->results as $result) {
+                $geolocations[] = $this->createFromResponse($result);
+            }
+        } catch (InvalidResponseException $e) {
         }
 
         return $geolocations;

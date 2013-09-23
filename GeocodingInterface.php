@@ -10,6 +10,7 @@
 
 namespace P2\GoogleGeocoding;
 
+use P2\GoogleGeocoding\Exception\InvalidFormatException;
 use P2\GoogleGeocoding\Geolocation\GeolocationInterface;
 
 /**
@@ -36,4 +37,14 @@ interface GeocodingInterface
      * @return GeolocationInterface[]
      */
     public function findByAddress($address);
+
+    /**
+     * Sets the format for geocoding responses.
+     *
+     * @param string $format
+     *
+     * @return GeocodingInterface
+     * @throws InvalidFormatException When the given format is not valid.
+     */
+    public function setFormat($format);
 }
