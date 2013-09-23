@@ -46,7 +46,7 @@ class GoogleGeocoding implements GeocodingInterface
     protected $format;
 
     /**
-     * @var array
+     * @var GeolocationInterface[]
      */
     protected $cache;
 
@@ -113,35 +113,39 @@ class GoogleGeocoding implements GeocodingInterface
      */
     protected function request($url)
     {
-        $geolocations = array();
+        if (! isset($this->cache[$url])) {
+            try {
+                $ch = curl_init();
 
-        try {
-            $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HEADER, false);
 
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_HEADER, false);
+                if (false === $response = curl_exec($ch)) {
+                    throw new InvalidResponseException();
+                }
 
-            if (false === $response = curl_exec($ch)) {
-                throw new InvalidResponseException();
+                switch ($this->getFormat()) {
+                    case static::FORMAT_JSON:
+                        $response = json_encode($response);
+                        break;
+                    case static::FORMAT_XML:
+                        $response = simplexml_load_string($response);
+                        break;
+                }
+
+                $geolocations = array();
+
+                foreach ($response->results as $result) {
+                    $geolocations[] = $this->createFromResponse($result);
+                }
+
+                $this->cache[$url] = $geolocations;
+            } catch (InvalidResponseException $e) {
             }
-
-            switch ($this->getFormat()) {
-                case static::FORMAT_JSON:
-                    $response = json_encode($response);
-                    break;
-                case static::FORMAT_XML:
-                    $response =  simplexml_load_string($response);
-                    break;
-            }
-
-            foreach ($response->results as $result) {
-                $geolocations[] = $this->createFromResponse($result);
-            }
-        } catch (InvalidResponseException $e) {
         }
 
-        return $geolocations;
+        return $this->cache[$url];
     }
 
     /**
