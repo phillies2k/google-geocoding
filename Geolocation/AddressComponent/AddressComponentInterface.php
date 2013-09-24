@@ -19,20 +19,26 @@ use P2\GoogleGeocoding\Exception\UnknownComponentTypeException;
 interface AddressComponentInterface 
 {
     /**
-     * @param $longName
+     * Sets the long name for this address component.
+     *
+     * @param string $longName
      *
      * @return AddressComponentInterface
      */
     public function setLongName($longName);
 
     /**
-     * @param $shortName
+     * Sets the short name for this address component.
+     *
+     * @param string $shortName
      *
      * @return AddressComponentInterface
      */
     public function setShortName($shortName);
 
     /**
+     * Sets the types for this address component.
+     *
      * @param array $types
      *
      * @return AddressComponentInterface

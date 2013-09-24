@@ -51,22 +51,17 @@ class Geolocation implements GeolocationInterface
     }
 
     /**
-     * Returns an address component for this geolocation by its type.
+     * @param AddressComponentInterface[] $addressComponents
      *
-     * @param string $type
-     *
-     * @return AddressComponentInterface
+     * @return GeolocationInterface
      */
-    public function getAddressComponent($type)
+    public function setAddressComponents(array $addressComponents)
     {
-        foreach ($this->addressComponents as $addressComponent) {
-            if (in_array($type, $addressComponent->getTypes())) {
-
-                return $addressComponent;
-            }
+        foreach ($addressComponents as $addressComponent) {
+            $this->addAddressComponent($addressComponent);
         }
 
-        return null;
+        return $this;
     }
 
     /**
@@ -124,15 +119,28 @@ class Geolocation implements GeolocationInterface
      */
     public function setTypes(array $types)
     {
-        $components = Component::getComponents();
-
         foreach ($types as $type) {
-            if (! in_array($type, $components)) {
-                throw new UnknownComponentTypeException(sprintf('Unknown component type "%s"', $type));
-            }
+            $this->addType($type);
         }
 
-        $this->types = $types;
+        return $this;
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return GeolocationInterface
+     * @throws \P2\GoogleGeocoding\Exception\UnknownComponentTypeException
+     */
+    public function addType($type)
+    {
+        if (! in_array($type, Component::getComponents())) {
+            throw new UnknownComponentTypeException(sprintf('Unknown component type "%s"', $type));
+        }
+
+        if (! in_array($type, $this->types)) {
+            $this->types[] = $type;
+        }
 
         return $this;
     }
