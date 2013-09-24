@@ -17,9 +17,23 @@ namespace P2\GoogleGeocoding\Geolocation\Geometry;
 interface ViewportInterface 
 {
     /**
+     * @param LocationInterface $northeast
+     *
+     * @return ViewportInterface
+     */
+    public function setNortheast(LocationInterface $northeast);
+
+    /**
      * @return LocationInterface
      */
     public function getNortheast();
+
+    /**
+     * @param LocationInterface $southwest
+     *
+     * @return ViewportInterface
+     */
+    public function setSouthwest(LocationInterface $southwest);
 
     /**
      * @return LocationInterface

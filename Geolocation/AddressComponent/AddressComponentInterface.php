@@ -17,6 +17,13 @@ namespace P2\GoogleGeocoding\Geolocation\AddressComponent;
 interface AddressComponentInterface 
 {
     /**
+     * @param $longName
+     *
+     * @return AddressComponentInterface
+     */
+    public function setLongName($longName);
+
+    /**
      * Returns the long name for this address component.
      *
      * @return string
@@ -24,11 +31,25 @@ interface AddressComponentInterface
     public function getLongName();
 
     /**
+     * @param $shortName
+     *
+     * @return AddressComponentInterface
+     */
+    public function setShortName($shortName);
+
+    /**
      * Returns the short name for this address component.
      *
      * @return string
      */
     public function getShortName();
+
+    /**
+     * @param array $types
+     *
+     * @return AddressComponentInterface
+     */
+    public function setTypes(array $types);
 
     /**
      * Returns the types for this address component.

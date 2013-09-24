@@ -17,9 +17,23 @@ namespace P2\GoogleGeocoding\Geolocation\Geometry;
 interface GeometryInterface 
 {
     /**
+     * @param LocationInterface $location
+     *
+     * @return GeometryInterface
+     */
+    public function setLocation(LocationInterface $location);
+
+    /**
      * @return LocationInterface
      */
     public function getLocation();
+
+    /**
+     * @param string $locationType
+     *
+     * @return GeometryInterface
+     */
+    public function setLocationType($locationType);
 
     /**
      * @return string
@@ -27,9 +41,23 @@ interface GeometryInterface
     public function getLocationType();
 
     /**
+     * @param ViewportInterface $viewport
+     *
+     * @return GeometryInterface
+     */
+    public function setViewport(ViewportInterface $viewport);
+
+    /**
      * @return ViewportInterface
      */
     public function getViewport();
+
+    /**
+     * @param ViewportInterface $bounds
+     *
+     * @return GeometryInterface
+     */
+    public function setBounds(ViewportInterface $bounds);
 
     /**
      * @return ViewportInterface

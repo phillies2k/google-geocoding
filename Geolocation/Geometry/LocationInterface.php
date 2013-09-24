@@ -17,6 +17,27 @@ namespace P2\GoogleGeocoding\Geolocation\Geometry;
  */
 interface LocationInterface 
 {
+    /**
+     * @param float $latitude
+     *
+     * @return LocationInterface
+     */
+    public function setLatitude($latitude);
+
+    /**
+     * @return float
+     */
     public function getLatitude();
+
+    /**
+     * @param float $longitude
+     *
+     * @return LocationInterface
+     */
+    public function setLongitude($longitude);
+
+    /**
+     * @return float
+     */
     public function getLongitude();
 }
