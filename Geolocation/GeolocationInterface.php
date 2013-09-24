@@ -20,6 +20,15 @@ use P2\GoogleGeocoding\Geolocation\Geometry\GeometryInterface;
 interface GeolocationInterface
 {
     /**
+     * Adds an address component for this geolocation.
+     *
+     * @param AddressComponentInterface $addressComponent
+     *
+     * @return GeolocationInterface
+     */
+    public function addAddressComponent(AddressComponentInterface $addressComponent);
+
+    /**
      * Returns an address component for this geolocation by its type.
      *
      * @param string $type
@@ -36,6 +45,15 @@ interface GeolocationInterface
     public function getAddressComponents();
 
     /**
+     * Sets the formatted address for this geolocation.
+     *
+     * @param string $formattedAddress
+     *
+     * @return GeolocationInterface
+     */
+    public function setFormattedAddress($formattedAddress);
+
+    /**
      * Returns the formatted address string.
      *
      * @return string
@@ -43,14 +61,32 @@ interface GeolocationInterface
     public function getFormattedAddress();
 
     /**
-     * Returns the geometry for this geolocation
+     * Sets the geometry for this geolocation.
+     *
+     * @param GeometryInterface $geometry
+     *
+     * @return GeolocationInterface
+     */
+    public function setGeometry(GeometryInterface $geometry);
+
+    /**
+     * Returns the geometry for this geolocation.
      *
      * @return GeometryInterface
      */
     public function getGeometry();
 
     /**
-     * Returns an array of types for this geolocation
+     * Sets the types for this geolocation.
+     *
+     * @param array $types
+     *
+     * @return GeolocationInterface
+     */
+    public function setTypes(array $types);
+
+    /**
+     * Returns an array of types for this geolocation.
      *
      * @return array
      */

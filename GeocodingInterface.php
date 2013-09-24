@@ -39,6 +39,15 @@ interface GeocodingInterface
     public function findByAddress($address);
 
     /**
+     * Sets the response class to hydrate. This class must implement the GeolocationInterface.
+     *
+     * @param string $responseClass
+     *
+     * @return GeocodingInterface
+     */
+    public function setResponseClass($responseClass);
+
+    /**
      * Sets the format for geocoding responses.
      *
      * @param string $format

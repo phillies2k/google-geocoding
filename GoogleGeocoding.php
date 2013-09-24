@@ -11,9 +11,10 @@
 namespace P2\GoogleGeocoding;
 
 use P2\GoogleGeocoding\Exception\InvalidFormatException;
+use P2\GoogleGeocoding\Exception\InvalidResponseClassException;
 use P2\GoogleGeocoding\Exception\InvalidResponseException;
+use P2\GoogleGeocoding\Exception\UnknownResponseClassException;
 use P2\GoogleGeocoding\Geolocation\AddressComponent\AddressComponent;
-use P2\GoogleGeocoding\Geolocation\Geolocation;
 use P2\GoogleGeocoding\Geolocation\GeolocationInterface;
 use P2\GoogleGeocoding\Geolocation\Geometry\Geometry;
 use P2\GoogleGeocoding\Geolocation\Geometry\Location;
@@ -43,7 +44,12 @@ class GoogleGeocoding implements GeocodingInterface
     /**
      * @var string
      */
-    protected $format;
+    protected $responseClass = 'P2\GoogleGeocoding\Geolocation\Geolocation';
+
+    /**
+     * @var string
+     */
+    protected $format = self::FORMAT_JSON;
 
     /**
      * @var GeolocationInterface[]
@@ -64,6 +70,26 @@ class GoogleGeocoding implements GeocodingInterface
     public function findByAddress($address)
     {
         return $this->request($this->generateUrl(array('address' => $address)));
+    }
+
+    /**
+     * @param string $responseClass
+     *
+     * @return GoogleGeocoding
+     */
+    public function setResponseClass($responseClass)
+    {
+        $this->responseClass = $responseClass;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getResponseClass()
+    {
+        return $this->responseClass;
     }
 
     /**
@@ -103,13 +129,13 @@ class GoogleGeocoding implements GeocodingInterface
     }
 
     /**
-     * Executes a request against the api. Returns an array of geolocations on success.
+     * Executes a request against the api. Returns an array of geolocations on success or null on failure.
      * Throws InvalidResponseException when the curl request encountered an error.
      *
      * @param string $url
      *
-     * @return GeolocationInterface[]
-     * @throws InvalidResponseException
+     * @return null|GeolocationInterface[]
+     * @throws \Exception
      */
     protected function request($url)
     {
@@ -142,6 +168,10 @@ class GoogleGeocoding implements GeocodingInterface
 
                 $this->cache[$url] = $geolocations;
             } catch (InvalidResponseException $e) {
+
+                return null;
+            } catch (\Exception $e) {
+                throw $e;
             }
         }
 
@@ -153,11 +183,24 @@ class GoogleGeocoding implements GeocodingInterface
      *
      * @param \stdClass $response
      *
-     * @return Geolocation
+     * @return GeolocationInterface
+     * @throws InvalidResponseClassException
+     * @throws UnknownResponseClassException
      */
     protected function createFromResponse($response)
     {
-        $geolocation = new Geolocation();
+        $class = $this->getResponseClass();
+
+        if (! class_exists($class)) {
+            throw new UnknownResponseClassException(sprintf('Response class not found: "%s"', $class));
+        }
+
+        $geolocation = new $class();
+
+        if (! $geolocation instanceof GeolocationInterface) {
+            throw new InvalidResponseClassException('The response class must implement GeolocationInterface.');
+        }
+
         $geolocation->setTypes($response->types);
         $geolocation->setFormattedAddress($response->formatted_address);
 
