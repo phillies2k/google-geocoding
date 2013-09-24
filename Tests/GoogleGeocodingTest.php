@@ -10,6 +10,7 @@
 
 namespace P2\GoogleGeocoding\Tests;
 
+use P2\GoogleGeocoding\Geolocation\Factory;
 use P2\GoogleGeocoding\GoogleGeocoding;
 
 /**
@@ -30,7 +31,7 @@ class GoogleGeocodingTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->googleGeocoding = new GoogleGeocoding();
+        $this->googleGeocoding = new GoogleGeocoding(new Factory());
     }
     
     /**
@@ -49,6 +50,9 @@ class GoogleGeocodingTest extends \PHPUnit_Framework_TestCase
      */
     public function testGenerateUrl()
     {
-        $result = $this->googleGeocoding->findByAddress('isartorplatz münchen');
+        $expected = GoogleGeocoding::SERVICE_URL . '/json?address=isartorplatz+3';
+        $parameters = array('address' => 'isartorplatz 3');
+
+        $this->assertEquals($expected, $this->googleGeocoding->generateUrl($parameters));
     }
 }

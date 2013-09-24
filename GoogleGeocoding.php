@@ -24,6 +24,11 @@ class GoogleGeocoding
     /**
      * @var string
      */
+    const SERVICE_URL = 'https://maps.googleapis.com/maps/api/geocode';
+
+    /**
+     * @var string
+     */
     const FORMAT_JSON = 'json';
 
     /**
@@ -32,9 +37,12 @@ class GoogleGeocoding
     const FORMAT_XML = 'xml';
 
     /**
-     * @var string
+     * @var array
      */
-    const SERVICE_URL = 'https://maps.googleapis.com/maps/api/geocode';
+    protected static $formats = array(
+        self::FORMAT_JSON,
+        self::FORMAT_XML
+    );
 
     /**
      * @var FactoryInterface
@@ -98,7 +106,7 @@ class GoogleGeocoding
      */
     public function setFormat($format)
     {
-        if ($format !== static::FORMAT_JSON || $format !== static::FORMAT_XML) {
+        if (! in_array($format, static::$formats)) {
             throw new InvalidFormatException(sprintf('Invalid google geocoding request format: "%s"', $format));
         }
 
@@ -198,12 +206,15 @@ class GoogleGeocoding
      *
      * @param string $url
      * @param boolean $hydrate
+     * @param boolean $sensor
      *
      * @return null|GeolocationInterface[]
      * @throws \Exception
      */
-    public function request($url, $hydrate = true)
+    public function request($url, $hydrate = true, $sensor = false)
     {
+        $url .= '&sensor=' . ($sensor ? 'true' : 'false');
+
         if ($this->isCached($url)) {
 
             return $this->getCache($url);
