@@ -44,7 +44,7 @@ class GoogleGeocoding
     /**
      * @var string
      */
-    protected $format = self::FORMAT_JSON;
+    protected $format;
 
     /**
      * @var GeolocationInterface[]
@@ -53,10 +53,14 @@ class GoogleGeocoding
 
     /**
      * @param FactoryInterface $factory
+     * @param string $format
      */
-    public function __construct(FactoryInterface $factory)
+    public function __construct(FactoryInterface $factory, $format = self::FORMAT_JSON)
     {
         $this->factory = $factory;
+        $this->cache = array();
+
+        $this->setFormat($format);
     }
 
     /**
