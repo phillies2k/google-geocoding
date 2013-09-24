@@ -11,9 +11,9 @@
 namespace P2\GoogleGeocoding\Exception;
 
 /**
- * Class InvalidResponseClassException
+ * Class UnknownComponentTypeException
  * @package P2\GoogleGeocoding\Exception
  */
-class InvalidResponseClassException extends \Exception
+class UnknownComponentTypeException extends \Exception
 {
 }

@@ -10,7 +10,6 @@
 
 namespace P2\GoogleGeocoding\Geolocation\Geometry;
 
-
 /**
  * Class Location
  * @package P2\GoogleGeocoding\Geolocation\Geometry

@@ -10,7 +10,6 @@
 
 namespace P2\GoogleGeocoding\Geolocation\Geometry;
 
-
 /**
  * Interface LocationInterface
  * @package P2\GoogleGeocoding\Geolocation\Geometry
@@ -18,6 +17,8 @@ namespace P2\GoogleGeocoding\Geolocation\Geometry;
 interface LocationInterface 
 {
     /**
+     * Sets the latitude for this location.
+     *
      * @param float $latitude
      *
      * @return LocationInterface
@@ -25,11 +26,15 @@ interface LocationInterface
     public function setLatitude($latitude);
 
     /**
+     * Returns the latitude of this location.
+     *
      * @return float
      */
     public function getLatitude();
 
     /**
+     * Sets the longitude for this location.
+     *
      * @param float $longitude
      *
      * @return LocationInterface
@@ -37,6 +42,8 @@ interface LocationInterface
     public function setLongitude($longitude);
 
     /**
+     * Returns the longitude for this location.
+     *
      * @return float
      */
     public function getLongitude();

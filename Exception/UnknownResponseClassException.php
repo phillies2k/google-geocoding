@@ -10,7 +10,6 @@
 
 namespace P2\GoogleGeocoding\Exception;
 
-
 /**
  * Class UnknownResponseClassException
  * @package P2\GoogleGeocoding\Exception

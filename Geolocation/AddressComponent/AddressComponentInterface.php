@@ -48,6 +48,7 @@ interface AddressComponentInterface
      * @param array $types
      *
      * @return AddressComponentInterface
+     * @throws UnknownComponentTypeException When an unknown type was given.
      */
     public function setTypes(array $types);
 

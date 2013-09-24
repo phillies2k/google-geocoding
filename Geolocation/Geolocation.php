@@ -10,6 +10,7 @@
 
 namespace P2\GoogleGeocoding\Geolocation;
 
+use P2\GoogleGeocoding\Exception\UnknownComponentTypeException;
 use P2\GoogleGeocoding\Geolocation\AddressComponent\AddressComponentInterface;
 use P2\GoogleGeocoding\Geolocation\Geometry\GeometryInterface;
 
@@ -113,6 +114,14 @@ class Geolocation implements GeolocationInterface
      */
     public function setTypes(array $types)
     {
+        $components = Component::getComponents();
+
+        foreach ($types as $type) {
+            if (! in_array($type, $components)) {
+                throw new UnknownComponentTypeException(sprintf('Unknown component type "%s"', $type));
+            }
+        }
+
         $this->types = $types;
 
         return $this;

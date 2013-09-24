@@ -10,6 +10,9 @@
 
 namespace P2\GoogleGeocoding\Geolocation\AddressComponent;
 
+use P2\GoogleGeocoding\Exception\UnknownComponentTypeException;
+use P2\GoogleGeocoding\Geolocation\Component;
+
 /**
  * Class AddressComponent
  * @package P2\GoogleGeocoding\Geolocation\AddressComponent
@@ -32,9 +35,7 @@ class AddressComponent implements AddressComponentInterface
     protected $types;
 
     /**
-     * @param string $longName
-     *
-     * @return AddressComponent
+     * {@inheritDoc}
      */
     public function setLongName($longName)
     {
@@ -44,7 +45,7 @@ class AddressComponent implements AddressComponentInterface
     }
 
     /**
-     * @return string
+     * {@inheritDoc}
      */
     public function getLongName()
     {
@@ -52,9 +53,7 @@ class AddressComponent implements AddressComponentInterface
     }
 
     /**
-     * @param string $shortName
-     *
-     * @return AddressComponent
+     * {@inheritDoc}
      */
     public function setShortName($shortName)
     {
@@ -64,7 +63,7 @@ class AddressComponent implements AddressComponentInterface
     }
 
     /**
-     * @return string
+     * {@inheritDoc}
      */
     public function getShortName()
     {
@@ -72,19 +71,25 @@ class AddressComponent implements AddressComponentInterface
     }
 
     /**
-     * @param array $types
-     *
-     * @return AddressComponent
+     * {@inheritDoc}
      */
     public function setTypes(array $types)
     {
+        $components = Component::getComponents();
+
+        foreach ($types as $type) {
+            if (! in_array($type, $components)) {
+                throw new UnknownComponentTypeException(sprintf('Unknown component type "%s"', $type));
+            }
+        }
+
         $this->types = $types;
 
         return $this;
     }
 
     /**
-     * @return array
+     * {@inheritDoc}
      */
     public function getTypes()
     {

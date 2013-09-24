@@ -11,18 +11,9 @@
 namespace P2\GoogleGeocoding;
 
 use P2\GoogleGeocoding\Exception\InvalidFormatException;
-use P2\GoogleGeocoding\Exception\InvalidResponseClassException;
 use P2\GoogleGeocoding\Exception\InvalidResponseException;
-use P2\GoogleGeocoding\Exception\UnknownResponseClassException;
-use P2\GoogleGeocoding\Geolocation\AddressComponent\AddressComponent;
-use P2\GoogleGeocoding\Geolocation\AddressComponent\AddressComponentInterface;
+use P2\GoogleGeocoding\Geolocation\FactoryInterface;
 use P2\GoogleGeocoding\Geolocation\GeolocationInterface;
-use P2\GoogleGeocoding\Geolocation\Geometry\Geometry;
-use P2\GoogleGeocoding\Geolocation\Geometry\GeometryInterface;
-use P2\GoogleGeocoding\Geolocation\Geometry\Location;
-use P2\GoogleGeocoding\Geolocation\Geometry\LocationInterface;
-use P2\GoogleGeocoding\Geolocation\Geometry\Viewport;
-use P2\GoogleGeocoding\Geolocation\Geometry\ViewportInterface;
 
 /**
  * Class GoogleGeocoding
@@ -46,54 +37,9 @@ class GoogleGeocoding implements GeocodingInterface
     const SERVICE_URL = 'https://maps.googleapis.com/maps/api/geocode';
 
     /**
-     * @var string
+     * @var FactoryInterface
      */
-    const CLASS_GEOLOCATION = 'P2\GoogleGeocoding\Geolocation\Geolocation';
-
-    /**
-     * @var string
-     */
-    const CLASS_ADDRESS_COMPONENT = 'P2\GoogleGeocoding\AddressComponent\AddressComponent';
-
-    /**
-     * @var string
-     */
-    const CLASS_GEOMETRY = 'P2\GoogleGeocoding\Geolocation\Geometry\Geometry';
-
-    /**
-     * @var string
-     */
-    const CLASS_VIEWPORT = 'P2\GoogleGeocoding\Geolocation\Geometry\Viewport';
-
-    /**
-     * @var string
-     */
-    const CLASS_LOCATION = 'P2\GoogleGeocoding\Geolocation\Geometry\Location';
-
-    /**
-     * @var string
-     */
-    protected $geolocationClass;
-
-    /**
-     * @var string
-     */
-    protected $addressComponentClass;
-
-    /**
-     * @var string
-     */
-    protected $geometryClass;
-
-    /**
-     * @var string
-     */
-    protected $viewportClass;
-
-    /**
-     * @var string
-     */
-    protected $locationClass;
+    protected $factory;
 
     /**
      * @var string
@@ -106,24 +52,11 @@ class GoogleGeocoding implements GeocodingInterface
     protected $cache;
 
     /**
-     * @param string $geolocationClass
-     * @param string $addressComponentClass
-     * @param string $geometryClass
-     * @param string $viewportClass
-     * @param string $locationClass
+     * @param FactoryInterface $factory
      */
-    public function __construct(
-        $geolocationClass = self::CLASS_GEOLOCATION,
-        $addressComponentClass = self::CLASS_ADDRESS_COMPONENT,
-        $geometryClass = self::CLASS_GEOMETRY,
-        $viewportClass = self::CLASS_VIEWPORT,
-        $locationClass = self::CLASS_LOCATION
-    ) {
-        $this->geolocationClass = $geolocationClass;
-        $this->addressComponentClass = $addressComponentClass;
-        $this->geometryClass = $geometryClass;
-        $this->viewportClass = $viewportClass;
-        $this->locationClass = $locationClass;
+    public function __construct(FactoryInterface $factory)
+    {
+        $this->factory = $factory;
     }
 
     /**
@@ -157,6 +90,16 @@ class GoogleGeocoding implements GeocodingInterface
     }
 
     /**
+     * Returns the factory for geocoding responses.
+     *
+     * @return FactoryInterface
+     */
+    protected function getFactory()
+    {
+        return $this->factory;
+    }
+
+    /**
      * Returns the format of geocoding responses.
      *
      * @return string
@@ -179,161 +122,115 @@ class GoogleGeocoding implements GeocodingInterface
     }
 
     /**
+     * Returns true when a cache entry was found for the given key, false otherwise.
+     *
+     * @param string $key
+     *
+     * @return boolean
+     */
+    protected function isCached($key)
+    {
+        return isset($this->cache[$key][$this->getFormat()]);
+    }
+
+    /**
+     * Sets a cache entry.
+     *
+     * @param string $key
+     * @param mixed $content
+     *
+     * @return $this
+     */
+    protected function setCache($key, $content)
+    {
+        if (isset($this->cache[$key])) {
+            $this->cache[$key] = array();
+        }
+
+        $this->cache[$key][$this->getFormat()] = $content;
+
+        return $this;
+    }
+
+    /**
+     * Returns the cache entry contents found for the given key, or null.
+     *
+     * @param string $key
+     *
+     * @return null|mixed
+     */
+    protected function getCache($key)
+    {
+        if (! isset($this->cache[$key])) {
+
+            return null;
+        }
+
+        if (! isset($this->cache[$key][$this->getFormat()])) {
+
+            return null;
+        }
+
+        return $this->cache[$key][$this->getFormat()];
+    }
+
+    /**
      * Executes a request against the api. Returns an array of geolocations on success or null on failure.
      * Throws InvalidResponseException when the curl request encountered an error.
      *
      * @param string $url
+     * @param boolean $hydrate
      *
      * @return null|GeolocationInterface[]
      * @throws \Exception
      */
-    protected function request($url)
+    protected function request($url, $hydrate = true)
     {
-        if (! isset($this->cache[$url])) {
-            try {
-                $ch = curl_init();
+        if ($this->isCached($url)) {
 
-                curl_setopt($ch, CURLOPT_URL, $url);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_HEADER, false);
+            return $this->getCache($url);
+        }
 
-                if (false === $response = curl_exec($ch)) {
-                    throw new InvalidResponseException();
-                }
+        try {
+            $ch = curl_init();
 
-                switch ($this->getFormat()) {
-                    case static::FORMAT_JSON:
-                        $response = json_encode($response);
-                        break;
-                    case static::FORMAT_XML:
-                        $response = simplexml_load_string($response);
-                        break;
-                }
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HEADER, false);
 
+            if (false === $response = curl_exec($ch)) {
+                throw new InvalidResponseException();
+            }
+
+            switch ($this->getFormat()) {
+                case static::FORMAT_JSON:
+                    $response = json_encode($response);
+                    break;
+                case static::FORMAT_XML:
+                    $response = simplexml_load_string($response);
+                    break;
+            }
+
+            if ($hydrate === true) {
                 $geolocations = array();
 
                 foreach ($response->results as $result) {
-                    $geolocations[] = $this->createFromResponse($result);
+                    $geolocations[] = $this->getFactory()->createFromResponseObject($result);
                 }
 
-                $this->cache[$url] = $geolocations;
-            } catch (InvalidResponseException $e) {
+                $this->setCache($url, $geolocations);
 
-                return null;
-            } catch (\Exception $e) {
-                throw $e;
+                return $geolocations;
+            } else {
+                $this->setCache($url, $response);
+
+                return $response->results;
             }
+        } catch (InvalidResponseException $e) {
+
+            return null;
+        } catch (\Exception $e) {
+            throw $e;
         }
-
-        return $this->cache[$url];
-    }
-
-    /**
-     * Creates a geolocation for the given response.
-     *
-     * @param \stdClass $response
-     *
-     * @return GeolocationInterface
-     * @throws InvalidResponseClassException
-     * @throws UnknownResponseClassException
-     */
-    protected function createFromResponse($response)
-    {
-        if (! class_exists($this->geolocationClass)) {
-            throw new UnknownResponseClassException(
-                sprintf(
-                    'Geolocation class not found: "%s"',
-                    $this->geolocationClass
-                )
-            );
-        }
-
-        if (! class_exists($this->addressComponentClass)) {
-            throw new UnknownResponseClassException(
-                sprintf(
-                    'Address component class not found: "%s"',
-                    $this->addressComponentClass
-                )
-            );
-        }
-
-        if (! class_exists($this->geometryClass)) {
-            throw new UnknownResponseClassException(sprintf('Geometry class not found: "%s"', $this->geometryClass));
-        }
-
-        if (! class_exists($this->locationClass)) {
-            throw new UnknownResponseClassException(sprintf('Location class not found: "%s"', $this->locationClass));
-        }
-
-        if (! class_exists($this->viewportClass)) {
-            throw new UnknownResponseClassException(sprintf('Viewport class not found: "%s"', $this->viewportClass));
-        }
-
-        $geolocation = new $this->geolocationClass();
-
-        if (! $geolocation instanceof GeolocationInterface) {
-            throw new InvalidResponseClassException('The geolocation class must implement GeolocationInterface.');
-        }
-
-        $geolocation->setTypes($response->types);
-        $geolocation->setFormattedAddress($response->formatted_address);
-
-        foreach ($response->address_components as $component) {
-            $addressComponent = new $this->addressComponentClass();
-
-            if (! $addressComponent instanceof AddressComponentInterface) {
-                throw new InvalidResponseClassException('The geolocation class must implement GeolocationInterface.');
-            }
-
-            $addressComponent->setLongName($component->long_name);
-            $addressComponent->setShortName($component->short_name);
-            $addressComponent->setTypes($component->types);
-            $geolocation->addAddressComponent($addressComponent);
-        }
-
-        $geometry = new $this->geometryClass();
-
-        if (! $geometry instanceof GeometryInterface) {
-            throw new InvalidResponseClassException('The geometry class must implement GeometryInterface.');
-        }
-
-        $geometry->setLocationType($response->geometry->location_type);
-
-        $location = new $this->locationClass($response->geometry->location->lat, $response->geometry->location->lng);
-
-        if (! $location instanceof LocationInterface) {
-            throw new InvalidResponseClassException('The location class must implement LocationInterface.');
-        }
-
-        $geometry->setLocation($location);
-
-        $viewport = new $this->viewportClass(
-            new Location($response->geometry->viewport->northeast->lat, $response->geometry->viewport->northeast->lng),
-            new Location($response->geometry->viewport->southwest->lat, $response->geometry->viewport->southwest->lng)
-        );
-
-        if (! $viewport instanceof ViewportInterface) {
-            throw new InvalidResponseClassException('The location class must implement ViewportInterface.');
-        }
-
-        $geometry->setViewport($viewport);
-
-        if (isset($response->geometry->bounds)) {
-
-            $bounds = new $this->viewportClass(
-                new Location($response->geometry->bounds->northeast->lat, $response->geometry->bounds->northeast->lng),
-                new Location($response->geometry->bounds->southwest->lat, $response->geometry->bounds->southwest->lng)
-            );
-
-            if (! $bounds instanceof ViewportInterface) {
-                throw new InvalidResponseClassException('The location class must implement ViewportInterface.');
-            }
-
-            $geometry->setBounds($bounds);
-        }
-
-        $geolocation->setGeometry($geometry);
-
-        return $geolocation;
     }
 }
