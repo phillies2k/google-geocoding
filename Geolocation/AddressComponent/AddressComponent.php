@@ -32,7 +32,7 @@ class AddressComponent implements AddressComponentInterface
     /**
      * @var array
      */
-    protected $types;
+    protected $types = array();
 
     /**
      * {@inheritDoc}
