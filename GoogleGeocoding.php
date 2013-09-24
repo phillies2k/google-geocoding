@@ -233,11 +233,13 @@ class GoogleGeocoding
 
             switch ($this->getFormat()) {
                 case static::FORMAT_JSON:
-                    $response = json_encode($response);
+                    $response = json_decode($response);
                     break;
                 case static::FORMAT_XML:
                     $response = simplexml_load_string($response);
                     break;
+                default:
+                    throw new \InvalidArgumentException('Unknown format.');
             }
 
             if ($hydrate === true) {
