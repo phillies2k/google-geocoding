@@ -51,7 +51,11 @@ class Geolocation implements GeolocationInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Returns an address component for this geolocation by its type.
+     *
+     * @param string $type
+     *
+     * @return AddressComponentInterface
      */
     public function getAddressComponent($type)
     {
@@ -66,7 +70,9 @@ class Geolocation implements GeolocationInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Returns an array of address components for this geolocation.
+     *
+     * @return AddressComponentInterface[]
      */
     public function getAddressComponents()
     {
@@ -84,7 +90,9 @@ class Geolocation implements GeolocationInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the formatted address string.
+     *
+     * @return string
      */
     public function getFormattedAddress()
     {
@@ -102,7 +110,9 @@ class Geolocation implements GeolocationInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the geometry for this geolocation.
+     *
+     * @return GeometryInterface
      */
     public function getGeometry()
     {
@@ -128,7 +138,9 @@ class Geolocation implements GeolocationInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Returns an array of types for this geolocation.
+     *
+     * @return array
      */
     public function getTypes()
     {

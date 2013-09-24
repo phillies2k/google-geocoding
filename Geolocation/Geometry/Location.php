@@ -47,7 +47,9 @@ class Location implements LocationInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the latitude of this location.
+     *
+     * @return float
      */
     public function getLatitude()
     {
@@ -65,7 +67,9 @@ class Location implements LocationInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the longitude for this location.
+     *
+     * @return float
      */
     public function getLongitude()
     {

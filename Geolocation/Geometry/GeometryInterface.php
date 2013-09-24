@@ -24,21 +24,11 @@ interface GeometryInterface
     public function setLocation(LocationInterface $location);
 
     /**
-     * @return LocationInterface
-     */
-    public function getLocation();
-
-    /**
      * @param string $locationType
      *
      * @return GeometryInterface
      */
     public function setLocationType($locationType);
-
-    /**
-     * @return string
-     */
-    public function getLocationType();
 
     /**
      * @param ViewportInterface $viewport
@@ -48,19 +38,9 @@ interface GeometryInterface
     public function setViewport(ViewportInterface $viewport);
 
     /**
-     * @return ViewportInterface
-     */
-    public function getViewport();
-
-    /**
      * @param ViewportInterface $bounds
      *
      * @return GeometryInterface
      */
     public function setBounds(ViewportInterface $bounds);
-
-    /**
-     * @return ViewportInterface
-     */
-    public function getBounds();
 }

@@ -26,13 +26,6 @@ interface LocationInterface
     public function setLatitude($latitude);
 
     /**
-     * Returns the latitude of this location.
-     *
-     * @return float
-     */
-    public function getLatitude();
-
-    /**
      * Sets the longitude for this location.
      *
      * @param float $longitude
@@ -40,11 +33,4 @@ interface LocationInterface
      * @return LocationInterface
      */
     public function setLongitude($longitude);
-
-    /**
-     * Returns the longitude for this location.
-     *
-     * @return float
-     */
-    public function getLongitude();
 }

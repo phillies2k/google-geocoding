@@ -47,7 +47,7 @@ class Geometry implements GeometryInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @return LocationInterface
      */
     public function getLocation()
     {
@@ -65,7 +65,7 @@ class Geometry implements GeometryInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @return string
      */
     public function getLocationType()
     {
@@ -83,7 +83,7 @@ class Geometry implements GeometryInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @return ViewportInterface
      */
     public function getViewport()
     {
@@ -101,7 +101,7 @@ class Geometry implements GeometryInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @return ViewportInterface
      */
     public function getBounds()
     {

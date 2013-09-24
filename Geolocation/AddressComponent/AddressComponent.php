@@ -45,7 +45,9 @@ class AddressComponent implements AddressComponentInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the long name for this address component.
+     *
+     * @return string
      */
     public function getLongName()
     {
@@ -63,7 +65,9 @@ class AddressComponent implements AddressComponentInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the short name for this address component.
+     *
+     * @return string
      */
     public function getShortName()
     {
@@ -89,7 +93,9 @@ class AddressComponent implements AddressComponentInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the types for this address component.
+     *
+     * @return array
      */
     public function getTypes()
     {

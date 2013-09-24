@@ -47,7 +47,7 @@ class Viewport implements ViewportInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @return LocationInterface
      */
     public function getNortheast()
     {
@@ -65,7 +65,7 @@ class Viewport implements ViewportInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @return LocationInterface
      */
     public function getSouthwest()
     {

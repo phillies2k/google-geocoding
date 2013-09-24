@@ -10,6 +10,8 @@
 
 namespace P2\GoogleGeocoding\Geolocation\AddressComponent;
 
+use P2\GoogleGeocoding\Exception\UnknownComponentTypeException;
+
 /**
  * Interface AddressComponentInterface
  * @package P2\GoogleGeocoding\Geolocation\AddressComponent
@@ -24,25 +26,11 @@ interface AddressComponentInterface
     public function setLongName($longName);
 
     /**
-     * Returns the long name for this address component.
-     *
-     * @return string
-     */
-    public function getLongName();
-
-    /**
      * @param $shortName
      *
      * @return AddressComponentInterface
      */
     public function setShortName($shortName);
-
-    /**
-     * Returns the short name for this address component.
-     *
-     * @return string
-     */
-    public function getShortName();
 
     /**
      * @param array $types
@@ -51,11 +39,4 @@ interface AddressComponentInterface
      * @throws UnknownComponentTypeException When an unknown type was given.
      */
     public function setTypes(array $types);
-
-    /**
-     * Returns the types for this address component.
-     *
-     * @return array
-     */
-    public function getTypes();
 }

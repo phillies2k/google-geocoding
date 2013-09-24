@@ -24,19 +24,9 @@ interface ViewportInterface
     public function setNortheast(LocationInterface $northeast);
 
     /**
-     * @return LocationInterface
-     */
-    public function getNortheast();
-
-    /**
      * @param LocationInterface $southwest
      *
      * @return ViewportInterface
      */
     public function setSouthwest(LocationInterface $southwest);
-
-    /**
-     * @return LocationInterface
-     */
-    public function getSouthwest();
 }
