@@ -40,11 +40,7 @@ class Geolocation implements GeolocationInterface
     protected $types;
 
     /**
-     * Adds an address component to this geolocation.
-     *
-     * @param AddressComponentInterface $addressComponent
-     *
-     * @return Geolocation
+     * {@inheritDoc}
      */
     public function addAddressComponent(AddressComponentInterface $addressComponent)
     {
@@ -54,11 +50,7 @@ class Geolocation implements GeolocationInterface
     }
 
     /**
-     * Returns an address component for this geolocation by its type.
-     *
-     * @param string $type
-     *
-     * @return AddressComponentInterface
+     * {@inheritDoc}
      */
     public function getAddressComponent($type)
     {
@@ -73,9 +65,7 @@ class Geolocation implements GeolocationInterface
     }
 
     /**
-     * Returns an array of address components for this geolocation.
-     *
-     * @return AddressComponentInterface[]
+     * {@inheritDoc}
      */
     public function getAddressComponents()
     {
@@ -83,11 +73,7 @@ class Geolocation implements GeolocationInterface
     }
 
     /**
-     * Returns the formatted address string.
-     *
-     * @param string $formattedAddress
-     *
-     * @return string
+     * {@inheritDoc}
      */
     public function setFormattedAddress($formattedAddress)
     {
@@ -97,9 +83,7 @@ class Geolocation implements GeolocationInterface
     }
 
     /**
-     * Returns the formatted address string.
-     *
-     * @return string
+     * {@inheritDoc}
      */
     public function getFormattedAddress()
     {
@@ -107,11 +91,7 @@ class Geolocation implements GeolocationInterface
     }
 
     /**
-     * Sets the geometry for this geolocation.
-     *
-     * @param GeometryInterface $geometry
-     *
-     * @return Geolocation
+     * {@inheritDoc}
      */
     public function setGeometry(GeometryInterface $geometry)
     {
@@ -121,9 +101,7 @@ class Geolocation implements GeolocationInterface
     }
 
     /**
-     * Returns the geometry for this geolocation.
-     *
-     * @return GeometryInterface
+     * {@inheritDoc}
      */
     public function getGeometry()
     {
@@ -131,11 +109,7 @@ class Geolocation implements GeolocationInterface
     }
 
     /**
-     * Sets the types for this geolocation.
-     *
-     * @param array $types
-     *
-     * @return Geolocation
+     * {@inheritDoc}
      */
     public function setTypes(array $types)
     {
@@ -145,9 +119,7 @@ class Geolocation implements GeolocationInterface
     }
 
     /**
-     * Returns an array of types for this geolocation.
-     *
-     * @return array
+     * {@inheritDoc}
      */
     public function getTypes()
     {

@@ -38,9 +38,7 @@ class Location implements LocationInterface
     }
 
     /**
-     * @param float $latitude
-     *
-     * @return Location
+     * {@inheritDoc}
      */
     public function setLatitude($latitude)
     {
@@ -50,7 +48,7 @@ class Location implements LocationInterface
     }
 
     /**
-     * @return float
+     * {@inheritDoc}
      */
     public function getLatitude()
     {
@@ -58,9 +56,7 @@ class Location implements LocationInterface
     }
 
     /**
-     * @param float $longitude
-     *
-     * @return Location
+     * {@inheritDoc}
      */
     public function setLongitude($longitude)
     {
@@ -70,7 +66,7 @@ class Location implements LocationInterface
     }
 
     /**
-     * @return float
+     * {@inheritDoc}
      */
     public function getLongitude()
     {

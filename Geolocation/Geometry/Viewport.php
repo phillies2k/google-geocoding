@@ -37,9 +37,7 @@ class Viewport implements ViewportInterface
     }
 
     /**
-     * @param \P2\GoogleGeocoding\Geolocation\Geometry\LocationInterface $northeast
-     *
-     * @return Viewport
+     * {@inheritDoc}
      */
     public function setNortheast(LocationInterface $northeast)
     {
@@ -49,7 +47,7 @@ class Viewport implements ViewportInterface
     }
 
     /**
-     * @return \P2\GoogleGeocoding\Geolocation\Geometry\LocationInterface
+     * {@inheritDoc}
      */
     public function getNortheast()
     {
@@ -57,9 +55,7 @@ class Viewport implements ViewportInterface
     }
 
     /**
-     * @param \P2\GoogleGeocoding\Geolocation\Geometry\LocationInterface $southwest
-     *
-     * @return Viewport
+     * {@inheritDoc}
      */
     public function setSouthwest(LocationInterface $southwest)
     {
@@ -69,7 +65,7 @@ class Viewport implements ViewportInterface
     }
 
     /**
-     * @return \P2\GoogleGeocoding\Geolocation\Geometry\LocationInterface
+     * {@inheritDoc}
      */
     public function getSouthwest()
     {

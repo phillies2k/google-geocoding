@@ -37,11 +37,9 @@ class Geometry implements GeometryInterface
     protected $bounds;
 
     /**
-     * @param \P2\GoogleGeocoding\Geolocation\Geometry\Location $location
-     *
-     * @return Geometry
+     * {@inheritDoc}
      */
-    public function setLocation(Location $location)
+    public function setLocation(LocationInterface $location)
     {
         $this->location = $location;
 
@@ -49,7 +47,7 @@ class Geometry implements GeometryInterface
     }
 
     /**
-     * @return \P2\GoogleGeocoding\Geolocation\Geometry\Location
+     * {@inheritDoc}
      */
     public function getLocation()
     {
@@ -57,9 +55,7 @@ class Geometry implements GeometryInterface
     }
 
     /**
-     * @param string $locationType
-     *
-     * @return Geometry
+     * {@inheritDoc}
      */
     public function setLocationType($locationType)
     {
@@ -69,7 +65,7 @@ class Geometry implements GeometryInterface
     }
 
     /**
-     * @return string
+     * {@inheritDoc}
      */
     public function getLocationType()
     {
@@ -77,11 +73,9 @@ class Geometry implements GeometryInterface
     }
 
     /**
-     * @param \P2\GoogleGeocoding\Geolocation\Geometry\Viewport $viewport
-     *
-     * @return Geometry
+     * {@inheritDoc}
      */
-    public function setViewport(Viewport $viewport)
+    public function setViewport(ViewportInterface $viewport)
     {
         $this->viewport = $viewport;
 
@@ -89,7 +83,7 @@ class Geometry implements GeometryInterface
     }
 
     /**
-     * @return \P2\GoogleGeocoding\Geolocation\Geometry\Viewport
+     * {@inheritDoc}
      */
     public function getViewport()
     {
@@ -97,11 +91,9 @@ class Geometry implements GeometryInterface
     }
 
     /**
-     * @param \P2\GoogleGeocoding\Geolocation\Geometry\Viewport $bounds
-     *
-     * @return Geometry
+     * {@inheritDoc}
      */
-    public function setBounds(Viewport $bounds)
+    public function setBounds(ViewportInterface $bounds)
     {
         $this->bounds = $bounds;
 
@@ -109,7 +101,7 @@ class Geometry implements GeometryInterface
     }
 
     /**
-     * @return \P2\GoogleGeocoding\Geolocation\Geometry\Viewport
+     * {@inheritDoc}
      */
     public function getBounds()
     {
