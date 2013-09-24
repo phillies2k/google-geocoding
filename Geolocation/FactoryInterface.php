@@ -20,41 +20,6 @@ use P2\GoogleGeocoding\Exception\UnknownResponseClassException;
 interface FactoryInterface 
 {
     /**
-     * The default implementation class name of GeolocationInterface.
-     *
-     * @var string
-     */
-    const CLASS_GEOLOCATION = 'P2\GoogleGeocoding\Geolocation\Geolocation';
-
-    /**
-     * The default implementation class name of AddressComponentInterface.
-     *
-     * @var string
-     */
-    const CLASS_ADDRESS_COMPONENT = 'P2\GoogleGeocoding\AddressComponent\AddressComponent';
-
-    /**
-     * The default implementation class name of GeometryInterface.
-     *
-     * @var string
-     */
-    const CLASS_GEOMETRY = 'P2\GoogleGeocoding\Geolocation\Geometry\Geometry';
-
-    /**
-     * The default implementation class name of ViewportInterface.
-     *
-     * @var string
-     */
-    const CLASS_VIEWPORT = 'P2\GoogleGeocoding\Geolocation\Geometry\Viewport';
-
-    /**
-     * The default implementation class name of LocationInterface.
-     *
-     * @var string
-     */
-    const CLASS_LOCATION = 'P2\GoogleGeocoding\Geolocation\Geometry\Location';
-
-    /**
      * Returns a geolocation object for the given response object.
      *
      * @param \stdClass $response
