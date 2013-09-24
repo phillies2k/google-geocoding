@@ -19,7 +19,7 @@ use P2\GoogleGeocoding\Geolocation\GeolocationInterface;
  * Class GoogleGeocoding
  * @package P2\GoogleGeocoding
  */
-class GoogleGeocoding implements GeocodingInterface
+class GoogleGeocoding
 {
     /**
      * @var string
@@ -60,7 +60,12 @@ class GoogleGeocoding implements GeocodingInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Returns an array of geolocations found for the given latitude and longitude.
+     *
+     * @param float $latitude
+     * @param float $longitude
+     *
+     * @return GeolocationInterface[]
      */
     public function findByCoordinates($latitude, $longitude)
     {
@@ -68,7 +73,11 @@ class GoogleGeocoding implements GeocodingInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Returns an array of geolocations found for the given address.
+     *
+     * @param string $address
+     *
+     * @return GeolocationInterface[]
      */
     public function findByAddress($address)
     {
@@ -76,7 +85,12 @@ class GoogleGeocoding implements GeocodingInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Sets the format for geocoding responses.
+     *
+     * @param string $format
+     *
+     * @return GoogleGeocoding
+     * @throws InvalidFormatException When the given format is not valid.
      */
     public function setFormat($format)
     {
@@ -116,7 +130,7 @@ class GoogleGeocoding implements GeocodingInterface
      *
      * @return string
      */
-    protected function generateUrl(array $parameters = array())
+    public function generateUrl(array $parameters = array())
     {
         return static::SERVICE_URL . '/' . $this->getFormat() . '?' . http_build_query($parameters);
     }
@@ -128,7 +142,7 @@ class GoogleGeocoding implements GeocodingInterface
      *
      * @return boolean
      */
-    protected function isCached($key)
+    public function isCached($key)
     {
         return isset($this->cache[$key][$this->getFormat()]);
     }
@@ -159,7 +173,7 @@ class GoogleGeocoding implements GeocodingInterface
      *
      * @return null|mixed
      */
-    protected function getCache($key)
+    public function getCache($key)
     {
         if (! isset($this->cache[$key])) {
 
@@ -184,7 +198,7 @@ class GoogleGeocoding implements GeocodingInterface
      * @return null|GeolocationInterface[]
      * @throws \Exception
      */
-    protected function request($url, $hydrate = true)
+    public function request($url, $hydrate = true)
     {
         if ($this->isCached($url)) {
 
